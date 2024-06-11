@@ -14,6 +14,7 @@ import (
 
 	"github.com/SerjRamone/vaultme/internal/config"
 	"github.com/SerjRamone/vaultme/internal/repository"
+	"github.com/SerjRamone/vaultme/internal/server"
 )
 
 func main() {
@@ -57,9 +58,29 @@ func run() error {
 
 	logger.Info("DB is running")
 
-	// TODO run server
+	srv, err := server.NewServer(db, logger, cfg)
+	if err != nil {
+		return fmt.Errorf("failed to create server: %w", err)
+	}
+
+	go func(s *server.Server) {
+		// TODO chan for errors
+		if err := s.Serve(); err != nil {
+			logger.Error("server error", zap.Error(err))
+		}
+	}(srv)
 
 	logger.Info("server is running")
+
+	wg.Add(1)
+	go func(s *server.Server) {
+		defer logger.Info("server stop")
+		defer wg.Done()
+		<-ctx.Done()
+
+		// TODO timeout maybe
+		s.Stop()
+	}(srv)
 
 	defer func() {
 		wg.Wait()

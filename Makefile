@@ -16,8 +16,8 @@ start-db:
 stop-db:
 	docker stop postgresql
 
-.PHONY: clean-data
-clean-data:
+.PHONY: clean-pgdata
+clean-pgdata:
 	rm -rf ./deployments/db/data/
 
 .PHONY: build-server
@@ -27,3 +27,11 @@ build-server:
 .PHONY: start-server
 start-server: build-server
 	env $$(cat .env | xargs) ./cmd/server/server
+
+.PHONY: proto-generate
+proto-generate:
+	mkdir -p pkg/vaultme_v1
+	protoc --proto_path api/v1 \
+        --go_out=./pkg/vaultme_v1 --go_opt=paths=source_relative \
+        --go-grpc_out=./pkg/vaultme_v1 --go-grpc_opt=paths=source_relative \
+        api/v1/user.proto

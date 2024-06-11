@@ -19,6 +19,7 @@ import (
 // DB represents DB instance
 type DB struct {
 	pool *pgxpool.Pool
+	log  *zap.Logger
 }
 
 // NewDB creates DB instance
@@ -50,6 +51,7 @@ func NewDB(ctx context.Context, dsn string, log *zap.Logger) (*DB, error) {
 
 	return &DB{
 		pool: pool,
+		log:  log,
 	}, nil
 }
 
