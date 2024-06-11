@@ -12,7 +12,7 @@ var (
 	ErrUserAlreadyExists = errors.New("login is already exists")
 
 	// ErrUserNotExists user not found error
-	ErrUserNotExists = errors.New("user is not exists")
+	ErrUserNotExists = errors.New("user does not exist")
 )
 
 // User is a user model
