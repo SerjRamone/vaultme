@@ -9,7 +9,7 @@ import (
 
 var (
 	// ErrUserAlreadyExists is not unique login error
-	ErrUserAlreadyExists = errors.New("logn is already exists")
+	ErrUserAlreadyExists = errors.New("login is already exists")
 
 	// ErrUserNotExists user not found error
 	ErrUserNotExists = errors.New("user is not exists")
