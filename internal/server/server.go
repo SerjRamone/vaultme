@@ -31,7 +31,7 @@ func NewServer(userStor models.UserStorage, log *zap.Logger, cfg *config.Server)
 		UserServer: NewUserServer(log, userStor),
 	}
 
-	// TODO secure grpc server
+	// TODO: secure grpc server
 	creds, err := getCredentials()
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func NewServer(userStor models.UserStorage, log *zap.Logger, cfg *config.Server)
 }
 
 // getCredentials - returns gRPC server credentials
-// TODO secure
+// TODO: secure
 func getCredentials() (credentials.TransportCredentials, error) {
 	creds := insecure.NewCredentials()
 	return creds, nil

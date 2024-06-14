@@ -29,14 +29,14 @@ func run() error {
 
 	logger, err := zap.NewProduction()
 	if err != nil {
-		return fmt.Errorf("failed to create logger: %w ", err)
+		return fmt.Errorf("failed to create logger: %w", err)
 	}
 
-	// TODO check error
+	// TODO: check error
 	defer logger.Sync()
 
 	cfg := config.NewServer()
-	if err := config.ParseEnvs(cfg); err != nil {
+	if err := config.ParseServerEnvs(cfg); err != nil {
 		return fmt.Errorf("failed to parse server config: %w", err)
 	}
 
@@ -78,7 +78,7 @@ func run() error {
 		defer wg.Done()
 		<-ctx.Done()
 
-		// TODO timeout maybe
+		// TODO: timeout maybe
 		s.Stop()
 	}(srv)
 
@@ -88,7 +88,7 @@ func run() error {
 
 	select {
 	case <-ctx.Done():
-		// TODO
+		// TODO:
 	}
 
 	go func() {

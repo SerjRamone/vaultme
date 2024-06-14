@@ -18,7 +18,7 @@ const uniqueConstraintLogin = "user_login_key"
 func (db *DB) CreateUser(ctx context.Context, u *models.UserDTO) (*models.User, error) {
 	row := db.pool.QueryRow(
 		ctx,
-		`INSERT INTO user(login, password) VALUES ($1, $2) RETURNING id, login, password;`,
+		`INSERT INTO "user" (login, password) VALUES ($1, $2) RETURNING id, login, password;`,
 		u.Login,
 		u.Password,
 	)
@@ -42,7 +42,7 @@ func (db *DB) CreateUser(ctx context.Context, u *models.UserDTO) (*models.User, 
 func (db *DB) GetUser(ctx context.Context, u *models.UserDTO) (*models.User, error) {
 	row := db.pool.QueryRow(
 		ctx,
-		`SELECT id, login, password FROM users WHERE login = $1;`,
+		`SELECT id, login, password FROM "user" WHERE login = $1;`,
 		u.Login,
 	)
 

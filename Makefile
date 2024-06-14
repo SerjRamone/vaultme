@@ -28,6 +28,14 @@ build-server:
 start-server: build-server
 	env $$(cat .env | xargs) ./cmd/server/server
 
+.PHONY: build-client
+build-client:
+	go build -o cmd/client/client cmd/client/*.go
+
+.PHONY: start-client
+start-client: build-client
+	env $$(cat .env | xargs) ./cmd/client/client
+
 .PHONY: proto-generate
 proto-generate:
 	mkdir -p pkg/vaultme_v1
