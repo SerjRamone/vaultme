@@ -37,7 +37,9 @@ func NewServer(userStor models.UserStorage, log *zap.Logger, cfg *config.Server)
 		return nil, err
 	}
 
-	s.gRPCServer = grpc.NewServer(grpc.Creds(creds))
+	options := grpc.ChainUnaryInterceptor(s.requestLogger())
+
+	s.gRPCServer = grpc.NewServer(grpc.Creds(creds), options)
 
 	return s, nil
 }
