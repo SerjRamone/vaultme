@@ -4,24 +4,31 @@ package vaultme;
 
 option go_package = "github.com/SerjRamone/vaultme/internal/vaultme_v1";
 
+// Store user UUID on id field
 message User {
   string id = 1;
 }
 
+// RegisterRequest - create new user with given login and password
 message RegisterRequest {
   string login = 1;
   string password = 2;
 }
 
+// RegisterResponse - response to RegisterRequest
+// return new user UUID or error
 message RegisterResponse {
   User user = 1;
 }
 
+// LoginRequest - login with given login and password
 message LoginRequest {
   string login = 1;
   string password = 2;
 }
 
+// LoginResponse - response to LoginRequest
+// return User or error
 message LoginResponse {
   User user = 1;
 }

@@ -20,6 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Store user UUID on id field
 type User struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -67,6 +68,7 @@ func (x *User) GetId() string {
 	return ""
 }
 
+// RegisterRequest - create new user with given login and password
 type RegisterRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -122,6 +124,8 @@ func (x *RegisterRequest) GetPassword() string {
 	return ""
 }
 
+// RegisterResponse - response to RegisterRequest
+// return new user UUID or error
 type RegisterResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -169,6 +173,7 @@ func (x *RegisterResponse) GetUser() *User {
 	return nil
 }
 
+// LoginRequest - login with given login and password
 type LoginRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -224,6 +229,8 @@ func (x *LoginRequest) GetPassword() string {
 	return ""
 }
 
+// LoginResponse - response to LoginRequest
+// return User or error
 type LoginResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

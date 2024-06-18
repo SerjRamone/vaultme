@@ -58,7 +58,7 @@ func run() error {
 
 	logger.Info("DB is running")
 
-	srv, err := server.NewServer(db, logger, cfg)
+	srv, err := server.NewServer(db, db, logger, cfg)
 	if err != nil {
 		return fmt.Errorf("failed to create server: %w", err)
 	}

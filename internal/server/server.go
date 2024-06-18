@@ -20,15 +20,18 @@ type Server struct {
 	gRPCServer *grpc.Server
 	log        *zap.Logger
 	UserServer *UserServer
+	ItemServer *ItemServer
 	address    string
 }
 
 // NewServer creates Server instance, initializes gRPC server
-func NewServer(userStor models.UserStorage, log *zap.Logger, cfg *config.Server) (*Server, error) {
+func NewServer(userStor models.UserStorage,
+	itemStor models.ItemStorage, log *zap.Logger, cfg *config.Server) (*Server, error) {
 	s := &Server{
 		address:    cfg.Address,
 		log:        log,
 		UserServer: NewUserServer(log, userStor),
+		ItemServer: NewItemServer(log, itemStor),
 	}
 
 	// TODO: secure grpc server
@@ -59,6 +62,7 @@ func (s *Server) Serve() error {
 	}
 
 	pb.RegisterUsersServer(s.gRPCServer, s.UserServer)
+	pb.RegisterItemsServer(s.gRPCServer, s.ItemServer)
 
 	if err := s.gRPCServer.Serve(listener); err != nil {
 		return fmt.Errorf("starting gRPC server error: %w", err)

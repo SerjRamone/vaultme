@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package vaultme;
+
+option go_package = "github.com/SerjRamone/vaultme/internal/vaultme_v1";
+
+// Types of stored data
+// - UNKNOWN - for backwards compatibility
+// - CREDENTIAL - pair of credential (login/email + password)
+// - TEXT - simple text string
+// - CARD - bank plastic card data
+// - RAW - raw binary data (file bytes)
+enum DataType {
+  UNKNOWN = 0; 
+  CREDENTIAL = 1;
+  TEXT = 2;
+  CARD = 3;
+  RAW = 4;
+}
+
+// Auth data (login + password)
+message Credential {
+  string login = 1;
+  string password = 2;
+}
+
+// Simple text string
+message Text {
+  string data = 1;
+}
+
+// Bank card representation
+message Card {
+  // card number, f.e. 1234123412341234
+  string number = 1;
+  // card owner, f.e. JOHN DOE
+  string owner = 2;
+  // expiration date, f.e. 12/29 (MM/YY)
+  google.protobuf.Timestamp validity_to = 3;
+}
+
+// File binary data
+message Raw {
+  bytes data = 1;
+}
+
+// Item metadata (key-value pairs)
+// some described item data
+// f.e. site or bank name
+message Meta {
+  string tag = 1;
+  string text = 2;
+}
+
+// Item contents all fields of user's stored item data
+message Item {
+  // item UUID
+  string id = 1;
+  // user UUID
+  string user_id = 2;
+  // item name (title or short description)
+  string name = 3;
+  // item data type (see DataType enum)
+  DataType type = 4;
+  // item creation date
+  google.protobuf.Timestamp created_at = 5;
+  // item update date
+  google.protobuf.Timestamp updated_at = 6;
+  // item data associated with data type
+  oneof data {
+    // see `message Credential`
+    Credential credential = 7;
+    // see `message Text`
+    Text text = 8;
+    // see `message Raw`
+    Raw raw = 9;
+    // see `message Card`
+    Card card = 10;
+  }
+  // item metadata (key-value pairs) f.e. site or bank name
+  // can be multiple
+  // see `message Meta`
+  repeated Meta meta = 13;
+  // item version (f.e. 1, 2, 3, etc.)
+  // every item update increases version by one
+  int64 version = 14;
+}
+
+// CreateItemRequest - creates new item
+// Need to seend user credentials (user UUID) via Metadata (request header)
+message CreateItemRequest {
+  // item to storing on server
+  Item item = 1;
+}
+
+// CreateItemResponse - response to CreateItemRequest 
+// return new item UUID or error
+message CreateItemResponse {
+  string id = 1; 
+}
+
+// UpdateItemRequest - updates existing item
+// Need to seend user credentials (user UUID) via Metadata (request header)
+message UpdateItemRequest {
+  // item for updating
+  Item item = 1;
+}
+
+// UpdateItemResponse - response to UpdateItemRequest
+// return updated item UUID or error
+message UpdateItemResponse {
+  string id = 1; 
+}
+
+// GetItemRequest - get item by id
+// Need to seend user credentials (user UUID) via Metadata (request header)
+message GetItemRequest {
+  string id = 1;
+}
+    
+// GetItemResponse - response to GetItemRequest
+// return item or error
+message GetItemResponse {
+  Item item = 1;
+}
+
+// ListItemRequest - fetch list of items with pagination
+// Need to seend user credentials (user UUID) via Metadata (request header)
+message ListItemRequest {
+  // number of items to fetch
+  int32 limit = 1;
+  // number of items to skip
+  int32 offset = 2;
+}
+
+// ListItemResponse - response to ListItemRequest
+message ListItemResponse {
+  // list of items  
+  repeated Item items = 1;
+}
+
+service Items {
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse);
+  rpc GetItem(GetItemRequest) returns (GetItemResponse);
+  rpc UpdateItem(UpdateItemRequest) returns (UpdateItemResponse);
+  rpc ListItem(ListItemRequest) returns (ListItemResponse);
+}
